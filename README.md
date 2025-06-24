@@ -39,3 +39,15 @@ License
 This project is licensed under the MIT License - see the LICENSE file for details.
 ```
 
+## Design
+
+- [Figma Mockups]
+
+ https://www.figma.com/design/j8dROdKDl0IqK5zyh1p5zf/TaskMaster-UI-Mockups?m=auto&t=vjtJjQrZvPeBQUjV-6
+
+
+
+- [Components Documentation](./docs/Components.md)
+
+
+- [TailwindCSS Mapping](./docs/Tailwind_Mapping.md)
