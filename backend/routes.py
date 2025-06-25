@@ -179,3 +179,64 @@ def create_task(project_id):
             'assigned_to': task.assigned_to
         }
     }), 201
+
+@api_bp.route('/api/profile', methods=['GET'])
+@jwt_required()
+def get_profile():
+    user_id = get_jwt_identity()
+    user = User.query.get_or_404(user_id)
+    return jsonify({
+        'user': {
+            'id': user.id,
+            'username': user.username,
+            'email': user.email,
+            'created_at': user.created_at.isoformat()
+        },
+        'projects_created': len(user.projects),
+        'tasks_assigned': len(user.tasks_assigned),
+        'tasks_completed': len([t for t in user.tasks_assigned if t.status == 'completed'])
+    }), 200
+
+@api_bp.route('/api/categories', methods=['GET'])
+@jwt_required()
+def get_categories():
+    categories = Category.query.all()
+    return jsonify({
+        'categories': [
+            {
+                'id': c.id,
+                'name': c.name,
+                'description': c.description,
+                'created_at': c.created_at.isoformat(),
+                'created_by': {'id': c.creator.id, 'username': c.creator.username}
+            } for c in categories
+        ]
+    }), 200
+
+@api_bp.route('/api/categories', methods=['POST'])
+@jwt_required()
+def create_category():
+    user_id = get_jwt_identity()
+    data = request.get_json()
+    name = data.get('name')
+    description = data.get('description')
+
+    if not name:
+        return jsonify({'error': 'Name is required'}), 400
+    if Category.query.filter_by(name=name).first():
+        return jsonify({'error': 'Category name already exists'}), 409
+
+    category = Category(name=name, description=description, created_by=user_id)
+    db.session.add(category)
+    db.session.commit()
+
+    return jsonify({
+        'message': 'Category created successfully',
+        'category': {
+            'id': category.id,
+            'name': category.name,
+            'description': category.description,
+            'created_at': category.created_at.isoformat(),
+            'created_by': user_id
+        }
+    }), 201

@@ -50,7 +50,9 @@ def login():
     if not user or not checkpw(password.encode('utf-8'), user.password_hash.encode('utf-8')):
         return jsonify({'error': 'Invalid credentials'}), 401
 
-    access_token = create_access_token(identity=user.id, expires_delta=timedelta(hours=24))
+    # FIXED: Convert user.id to a string for the JWT "sub" field
+    access_token = create_access_token(identity=str(user.id), expires_delta=timedelta(hours=24))
+
     return jsonify({
         'message': 'Login successful',
         'access_token': access_token,
