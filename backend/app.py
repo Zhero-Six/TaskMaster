@@ -1,3 +1,4 @@
+# app.py
 from flask import Flask
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
@@ -18,6 +19,9 @@ CORS(app)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 jwt = JWTManager(app)
+
+# ✅ Import models after db is initialized
+import models
 
 @app.route('/')
 def index():
