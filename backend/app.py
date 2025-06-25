@@ -6,6 +6,7 @@ from flask_jwt_extended import JWTManager
 from dotenv import load_dotenv
 from models import db
 from auth import auth_bp
+from routes import api_bp
 import os
 
 load_dotenv()
@@ -16,6 +17,11 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
 app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+# Debug: Print configuration
+print(f"SECRET_KEY: {app.config['SECRET_KEY']}")
+print(f"DATABASE_URL: {app.config['SQLALCHEMY_DATABASE_URI']}")
+print(f"JWT_SECRET_KEY: {app.config['JWT_SECRET_KEY']}")
+
 CORS(app)
 db.init_app(app)
 migrate = Migrate(app, db)
@@ -23,10 +29,16 @@ jwt = JWTManager(app)
 
 # Register Blueprints
 app.register_blueprint(auth_bp)
+app.register_blueprint(api_bp)
 
 # Initialize database tables
 with app.app_context():
-    db.create_all()
+    print("Creating database tables...")
+    try:
+        db.create_all()
+        print("Database tables created successfully")
+    except Exception as e:
+        print(f"Error creating database: {e}")
 
 # Root route
 @app.route('/')
