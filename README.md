@@ -56,8 +56,3 @@ This project is licensed under the MIT License - see the LICENSE file for detail
   cd frontend
   npm install
   npm start
-
-Routes: / (Home), /login (Login)
-
-Components: NavBar, ProjectCard, FormInput, Button
-
