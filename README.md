@@ -50,4 +50,4 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - [Components Documentation](./docs/Components.md)
 
 
-- [TailwindCSS Mapping](./docs/Tailwind_Mapping.md)
+
