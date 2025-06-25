@@ -49,5 +49,11 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 - [Components Documentation](./docs/Components.md)
 
-
+## Frontend Setup
+- **Tech Stack**: React, React Router, Custom CSS (Figma-based)
+- **Run Locally**:
+  ```bash
+  cd frontend
+  npm install
+  npm start
 
