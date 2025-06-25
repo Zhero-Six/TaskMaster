@@ -1,21 +1,26 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { AuthContext } from '../context/AuthContext';
+import { Link } from 'react-router-dom';
 
-const NavBar = ({ isAuthenticated }) => {
+const NavBar = () => {
+  const { user, logout } = useContext(AuthContext);
   return (
     <nav className="navbar">
       <h1>TaskMaster</h1>
       <div>
-        <a href="/">Home</a>
-        <a href="/projects">Projects</a>
-        {isAuthenticated ? (
+        <Link to="/">Home</Link>
+        <Link to="/projects">Projects</Link>
+        {user ? (
           <>
-            <a href="/profile">Profile</a>
-            <a href="/logout">Logout</a>
+            <Link to="/profile">Profile</Link>
+            <button onClick={logout} className="button secondary" style={{ marginLeft: '16px' }}>
+              Logout
+            </button>
           </>
         ) : (
           <>
-            <a href="/login">Login</a>
-            <a href="/register">Register</a>
+            <Link to="/login">Login</Link>
+            <Link to="/register">Register</Link>
           </>
         )}
       </div>
