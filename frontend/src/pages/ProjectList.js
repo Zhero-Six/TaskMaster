@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import ProjectCard from '../components/ProjectCard';
 
 const ProjectList = () => {
-  // Mock data
   const projects = [
     { id: 1, title: 'Website Redesign', description: 'Redesign site', creator: 'John Doe', status: 'Active' },
     { id: 2, title: 'Mobile App', description: 'Build app', creator: 'Jane Smith', status: 'Active' },

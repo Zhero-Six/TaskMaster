@@ -8,9 +8,11 @@ const ProjectCard = ({ id, title, description, creator, status }) => {
       <p>{description}</p>
       <p>By: {creator}</p>
       <span className="status">{status}</span>
-      <Link to={`/projects/${id}`} className="button secondary" style={{ marginTop: '8px', display: 'inline-block' }}>
-        View Details
-      </Link>
+      {id && (
+        <Link to={`/projects/${id}`} className="button secondary" style={{ marginTop: '8px', display: 'inline-block' }}>
+          View Details
+        </Link>
+      )}
     </div>
   );
 };

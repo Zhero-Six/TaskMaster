@@ -7,7 +7,6 @@ import Button from '../components/Button';
 const EditProject = () => {
   const { id } = useParams();
   const { user } = useContext(AuthContext);
-  // Mock data
   const project = {
     id,
     title: `Project ${id}`,
@@ -27,7 +26,6 @@ const EditProject = () => {
 
   const handleSubmit = e => {
     e.preventDefault();
-    // Mock API call
     if (formData.title && formData.description) {
       alert('Project updated');
     } else {

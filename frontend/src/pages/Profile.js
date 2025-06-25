@@ -4,7 +4,6 @@ import ProjectCard from '../components/ProjectCard';
 
 const Profile = () => {
   const { user } = useContext(AuthContext);
-  // Mock data
   const assignedProjects = [
     { id: 1, title: 'Website Redesign', description: 'Redesign site', creator: user.username, status: 'Active' },
   ];

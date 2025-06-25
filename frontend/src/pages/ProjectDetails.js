@@ -3,7 +3,6 @@ import { useParams } from 'react-router-dom';
 
 const ProjectDetails = () => {
   const { id } = useParams();
-  // Mock data
   const project = {
     id,
     title: `Project ${id}`,

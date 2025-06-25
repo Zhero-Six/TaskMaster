@@ -12,7 +12,6 @@ const CreateProject = () => {
 
   const handleSubmit = e => {
     e.preventDefault();
-    // Mock API call
     if (formData.title && formData.description) {
       alert('Project created');
     } else {

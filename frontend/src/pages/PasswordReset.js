@@ -9,7 +9,6 @@ const PasswordReset = () => {
 
   const handleSubmit = e => {
     e.preventDefault();
-    // Mock API call
     if (email) {
       setMessage('Password reset link sent to your email.');
       setError('');

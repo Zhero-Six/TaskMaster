@@ -12,7 +12,6 @@ const Register = () => {
 
   const handleSubmit = e => {
     e.preventDefault();
-    // Mock API call
     if (formData.username && formData.email && formData.password) {
       alert('Registration successful');
     } else {

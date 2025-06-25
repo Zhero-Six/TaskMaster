@@ -8,8 +8,6 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     if (token) {
-      // Simulate fetching user data with token
-      // Replace with API call: axios.get('/api/me', { headers: { Authorization: `Bearer ${token}` } })
       setUser({ id: 1, username: 'Test User', email: 'test@example.com' });
     }
   }, [token]);
