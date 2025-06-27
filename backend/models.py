@@ -13,6 +13,7 @@ class User(db.Model):
     projects = db.relationship('Project', back_populates='creator', lazy=True)
     tasks_assigned = db.relationship('Task', back_populates='assignee', lazy=True)
     categories = db.relationship('Category', back_populates='creator', lazy=True)
+    reset_tokens = db.relationship('PasswordResetToken', back_populates='user', lazy=True)
 
 class Project(db.Model):
     __tablename__ = 'project'
@@ -32,7 +33,7 @@ class Category(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     created_by = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     creator = db.relationship('User', back_populates='categories')
-    tasks = db.relationship('Task', secondary='task_category', back_populates='categories')
+    tasks = db.relationship('Task', secondary='task_category', back_populates='categories')  # Fixed back_populates
 
 class Task(db.Model):
     __tablename__ = 'task'
@@ -55,3 +56,12 @@ class TaskCategory(db.Model):
     category_id = db.Column(db.Integer, db.ForeignKey('category.id', ondelete='CASCADE'), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     __table_args__ = (db.UniqueConstraint('task_id', 'category_id', name='uq_task_category'),)
+
+class PasswordResetToken(db.Model):
+    __tablename__ = 'password_reset_token'
+    id = db.Column(db.Integer, primary_key=True)
+    token = db.Column(db.String(100), unique=True, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    expires_at = db.Column(db.DateTime, nullable=False)
+    user = db.relationship('User', back_populates='reset_tokens')

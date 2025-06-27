@@ -1,36 +1,78 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ProjectCard from '../components/ProjectCard';
+import axios from 'axios';
 
 const ProjectList = () => {
-  const projects = [
-    { id: 1, title: 'Website Redesign', description: 'Redesign site', creator: 'John Doe', status: 'Active' },
-    { id: 2, title: 'Mobile App', description: 'Build app', creator: 'Jane Smith', status: 'Active' },
-    { id: 3, title: 'API', description: 'CRM integration', creator: 'Bob Johnson', status: 'Pending' },
-  ];
+  const [projects, setProjects] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState('');
 
-  const filteredProjects = projects.filter(project =>
-    project.title.toLowerCase().includes(filter.toLowerCase())
-  );
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [projectsRes, categoriesRes] = await Promise.all([
+          axios.get('http://localhost:5000/api/projects'),
+          axios.get('http://localhost:5000/api/categories', {
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+          }),
+        ]);
+        setProjects(projectsRes.data.projects);
+        setCategories(categoriesRes.data.categories);
+        setLoading(false);
+      } catch {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const filteredProjects = projects.filter(project => {
+    const matchesTitle = project.title.toLowerCase().includes(filter.toLowerCase());
+    const matchesCategory = categoryFilter
+      ? project.tasks.some(task =>
+          task.categories.some(category => category.id === parseInt(categoryFilter))
+        )
+      : true;
+    return matchesTitle && matchesCategory;
+  });
 
   return (
-    <div className="container" style={{ backgroundColor: 'var(--gray-100)', minHeight: '100vh' }}>
-      <h1 style={{ fontSize: '24px', fontWeight: '600', color: 'var(--gray-900)', marginBottom: '16px' }}>
-        All Projects
-      </h1>
-      <input
-        type="text"
-        placeholder="Filter by title..."
-        value={filter}
-        onChange={e => setFilter(e.target.value)}
-        className="form-input"
-        style={{ marginBottom: '16px' }}
-      />
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '16px' }}>
-        {filteredProjects.map(project => (
-          <ProjectCard key={project.id} {...project} />
-        ))}
+    <div className="container">
+      <h1 className="hero-title">All Projects</h1>
+      <div style={{ marginBottom: '16px' }}>
+        <input
+          type="text"
+          placeholder="Filter by title..."
+          value={filter}
+          onChange={e => setFilter(e.target.value)}
+          style={{ padding: '8px', marginRight: '16px', width: '200px' }}
+        />
+        <select
+          value={categoryFilter}
+          onChange={e => setCategoryFilter(e.target.value)}
+          style={{ padding: '8px', width: '200px' }}
+        >
+          <option value="">All Categories</option>
+          {categories.map(category => (
+            <option key={category.id} value={category.id}>
+              {category.name}
+            </option>
+          ))}
+        </select>
       </div>
+      {loading ? (
+        <p>Loading projects...</p>
+      ) : (
+        <div className="featured-projects">
+          {filteredProjects.length > 0 ? (
+            filteredProjects.map(project => <ProjectCard key={project.id} {...project} />)
+          ) : (
+            <p>No projects found.</p>
+          )}
+        </div>
+      )}
     </div>
   );
 };

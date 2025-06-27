@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import FormInput from '../components/FormInput';
 import Button from '../components/Button';
+import axios from 'axios';
 
 const Register = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({ username: '', email: '', password: '' });
   const [errors, setErrors] = useState({});
 
@@ -10,25 +13,33 @@ const Register = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = e => {
+  const handleSubmit = async e => {
     e.preventDefault();
-    if (formData.username && formData.email && formData.password) {
-      alert('Registration successful');
-    } else {
-      setErrors({
-        username: !formData.username ? 'Username is required' : '',
-        email: !formData.email ? 'Email is required' : '',
-        password: !formData.password ? 'Password is required' : '',
-      });
+    const newErrors = {};
+    if (!formData.username) newErrors.username = 'Username is required';
+    if (!formData.email) newErrors.email = 'Email is required';
+    if (!formData.password || formData.password.length < 8) newErrors.password = 'Password must be at least 8 characters';
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    try {
+      await axios.post('http://localhost:5000/api/register', formData);
+      navigate('/login');
+    } catch (error) {
+      setErrors({ general: error.response?.data?.error || 'Registration failed' });
     }
   };
 
   return (
-    <div style={{ backgroundColor: 'var(--gray-100)', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <div style={{ backgroundColor: 'var(--gray-100)', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px' }}>
       <div style={{ backgroundColor: 'white', padding: '32px', borderRadius: '8px', boxShadow: '0 1px 2px rgba(0, 0, 0, 0.1)', maxWidth: '400px', width: '100%' }}>
         <h2 style={{ fontSize: '20px', fontWeight: '600', color: 'var(--gray-900)', marginBottom: '24px' }}>
           Register
         </h2>
+        {errors.general && <p style={{ color: 'var(--red-500)', fontSize: '14px' }}>{errors.general}</p>}
         <form onSubmit={handleSubmit}>
           <FormInput
             label="Username"
@@ -61,6 +72,9 @@ const Register = () => {
             Register
           </Button>
         </form>
+        <Link to="/login" style={{ color: 'var(--blue-600)', fontSize: '14px', marginTop: '8px', display: 'inline-block' }}>
+          Already have an account? Log in
+        </Link>
       </div>
     </div>
   );

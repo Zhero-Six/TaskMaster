@@ -1,35 +1,43 @@
-import React, { useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
-import ProjectCard from '../components/ProjectCard';
+import axios from 'axios';
 
 const Profile = () => {
   const { user } = useContext(AuthContext);
-  const assignedProjects = [
-    { id: 1, title: 'Website Redesign', description: 'Redesign site', creator: user.username, status: 'Active' },
-  ];
-  const assignedTasks = [
-    { id: 1, title: 'Design Homepage', status: 'Pending' },
-  ];
+  const [profile, setProfile] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (user) {
+      axios
+        .get('http://localhost:5000/api/profile', {
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        })
+        .then(response => {
+          setProfile(response.data);
+          setLoading(false);
+        })
+        .catch(() => setLoading(false));
+    }
+  }, [user]);
 
   return (
-    <div className="container" style={{ backgroundColor: 'var(--gray-100)', minHeight: '100vh' }}>
-      <h1 style={{ fontSize: '24px', fontWeight: '600', color: 'var(--gray-900)', marginBottom: '16px' }}>
-        {user.username}'s Profile
-      </h1>
-      <h2 style={{ fontSize: '20px', fontWeight: '600', margin: '16px 0 8px' }}>Assigned Projects</h2>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '16px' }}>
-        {assignedProjects.map(project => (
-          <ProjectCard key={project.id} {...project} />
-        ))}
-      </div>
-      <h2 style={{ fontSize: '20px', fontWeight: '600', margin: '16px 0 8px' }}>Assigned Tasks</h2>
-      <ul>
-        {assignedTasks.map(task => (
-          <li key={task.id}>
-            {task.title} - {task.status}
-          </li>
-        ))}
-      </ul>
+    <div className="container">
+      <h1 className="hero-title">User Profile</h1>
+      {loading ? (
+        <p>Loading profile...</p>
+      ) : profile ? (
+        <>
+          <p>Username: {profile.user.username}</p>
+          <p>Email: {profile.user.email}</p>
+          <p>Joined: {new Date(profile.user.created_at).toLocaleDateString()}</p>
+          <p>Projects Created: {profile.projects_created}</p>
+          <p>Tasks Assigned: {profile.tasks_assigned}</p>
+          <p>Tasks Completed: {profile.tasks_completed}</p>
+        </>
+      ) : (
+        <p>Profile not available.</p>
+      )}
     </div>
   );
 };

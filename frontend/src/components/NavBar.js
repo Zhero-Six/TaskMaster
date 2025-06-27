@@ -1,28 +1,44 @@
 import React, { useContext } from 'react';
-import { AuthContext } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext';
+import Button from './Button';
 
 const NavBar = () => {
   const { user, logout } = useContext(AuthContext);
+
   return (
-    <nav className="navbar">
-      <h1>TaskMaster</h1>
-      <div>
-        <Link to="/">Home</Link>
-        <Link to="/projects">Projects</Link>
-        {user ? (
-          <>
-            <Link to="/profile">Profile</Link>
-            <button onClick={logout} className="button secondary" style={{ marginLeft: '16px' }}>
-              Logout
-            </button>
-          </>
-        ) : (
-          <>
-            <Link to="/login">Login</Link>
-            <Link to="/register">Register</Link>
-          </>
-        )}
+    <nav style={{ backgroundColor: 'var(--gray-900)', padding: '16px', color: 'white' }}>
+      <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Link to="/" style={{ color: 'white', fontSize: '24px', fontWeight: 'bold' }}>
+          TaskMaster
+        </Link>
+        <div>
+          <Link to="/projects" style={{ color: 'white', marginRight: '16px' }}>
+            Projects
+          </Link>
+          {user ? (
+            <>
+              <Link to="/profile" style={{ color: 'white', marginRight: '16px' }}>
+                Profile
+              </Link>
+              <Link to="/create-project" style={{ color: 'white', marginRight: '16px' }}>
+                Create Project
+              </Link>
+              <Button variant="secondary" onClick={logout}>
+                Logout
+              </Button>
+            </>
+          ) : (
+            <>
+              <Link to="/login" style={{ color: 'white', marginRight: '16px' }}>
+                Login
+              </Link>
+              <Link to="/register" style={{ color: 'white' }}>
+                Register
+              </Link>
+            </>
+          )}
+        </div>
       </div>
     </nav>
   );

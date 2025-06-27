@@ -2,10 +2,11 @@ import React, { useState, useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import FormInput from '../components/FormInput';
 import Button from '../components/Button';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const { login } = useContext(AuthContext);
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [errors, setErrors] = useState({});
 
@@ -13,15 +14,21 @@ const Login = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = e => {
+  const handleSubmit = async e => {
     e.preventDefault();
-    if (formData.email && formData.password) {
-      login('fake-token');
-    } else {
+    if (!formData.email || !formData.password) {
       setErrors({
         email: !formData.email ? 'Email is required' : '',
         password: !formData.password ? 'Password is required' : '',
       });
+      return;
+    }
+
+    const success = await login(formData.email, formData.password);
+    if (success) {
+      navigate('/');
+    } else {
+      setErrors({ general: 'Invalid credentials' });
     }
   };
 
@@ -31,6 +38,7 @@ const Login = () => {
         <h2 style={{ fontSize: '20px', fontWeight: '600', color: 'var(--gray-900)', marginBottom: '24px' }}>
           Log In
         </h2>
+        {errors.general && <p style={{ color: 'var(--red-500)', fontSize: '14px' }}>{errors.general}</p>}
         <form onSubmit={handleSubmit}>
           <FormInput
             label="Email"

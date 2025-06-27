@@ -18,7 +18,8 @@ def get_projects():
                 'description': p.description,
                 'created_at': p.created_at.isoformat(),
                 'creator': {'id': p.creator.id, 'username': p.creator.username},
-                'task_count': len(p.tasks)
+                'task_count': len(p.tasks),
+                'status': p.status or 'active'
             } for p in projects.items
         ],
         'pagination': {
@@ -119,11 +120,36 @@ def update_task(id):
     task = Task.query.get_or_404(id)
     data = request.get_json()
     status = data.get('status')
+    title = data.get('title')
+    description = data.get('description')
+    due_date = data.get('due_date')
+    assigned_to = data.get('assigned_to')
+    category_ids = data.get('category_ids', [])
 
-    if status not in ['pending', 'in_progress', 'completed', 'cancelled']:
+    if status and status not in ['pending', 'in_progress', 'completed', 'cancelled']:
         return jsonify({'error': 'Invalid status'}), 400
 
-    task.status = status
+    if title:
+        task.title = title
+    if description:
+        task.description = description
+    if status:
+        task.status = status
+    if due_date:
+        task.due_date = datetime.fromisoformat(due_date)
+    if assigned_to:
+        task.assigned_to = assigned_to
+
+    if category_ids:
+        # Clear existing categories
+        TaskCategory.query.filter_by(task_id=task.id).delete()
+        # Add new categories
+        for cat_id in category_ids:
+            category = Category.query.get(cat_id)
+            if category:
+                task_category = TaskCategory(task_id=task.id, category_id=cat_id)
+                db.session.add(task_category)
+
     db.session.commit()
 
     return jsonify({
@@ -131,8 +157,11 @@ def update_task(id):
         'task': {
             'id': task.id,
             'title': task.title,
+            'description': task.description,
             'status': task.status,
-            'updated_at': datetime.utcnow().isoformat()
+            'due_date': task.due_date.isoformat() if task.due_date else None,
+            'assigned_to': task.assigned_to,
+            'categories': [{'id': c.id, 'name': c.name} for c in task.categories]
         }
     }), 200
 
@@ -159,6 +188,7 @@ def create_task(project_id):
         assigned_to=assigned_to
     )
     db.session.add(task)
+    db.session.flush()  # Ensure task.id is available
 
     for cat_id in category_ids:
         category = Category.query.get(cat_id)
