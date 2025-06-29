@@ -12,11 +12,13 @@ import os
 
 load_dotenv()
 
-app = Flask(__name__)
+app = Flask(__name__)  # Confirmed correct
+CORS(app, resources={r"/api/*": {"origins": "*"}})  # Updated for specific API routes
+
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
-app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY')
 app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER')
 app.config['MAIL_PORT'] = int(os.getenv('MAIL_PORT', 587))
 app.config['MAIL_USE_TLS'] = os.getenv('MAIL_USE_TLS', 'true').lower() == 'true'
@@ -29,7 +31,6 @@ print(f"SECRET_KEY: {app.config['SECRET_KEY']}")
 print(f"DATABASE_URL: {app.config['SQLALCHEMY_DATABASE_URI']}")
 print(f"JWT_SECRET_KEY: {app.config['JWT_SECRET_KEY']}")
 
-CORS(app)
 db.init_app(app)
 migrate = Migrate(app, db)
 jwt = JWTManager(app)
@@ -38,15 +39,6 @@ mail = Mail(app)
 # Register Blueprints
 app.register_blueprint(auth_bp)
 app.register_blueprint(api_bp)
-
-# Initialize database tables
-with app.app_context():
-    print("Creating database tables...")
-    try:
-        db.create_all()
-        print("Database tables created successfully")
-    except Exception as e:
-        print(f"Error creating database: {e}")
 
 # Root route
 @app.route('/')
