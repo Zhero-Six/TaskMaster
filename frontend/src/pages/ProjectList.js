@@ -18,10 +18,16 @@ const ProjectList = () => {
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
           }),
         ]);
-        setProjects(projectsRes.data.projects);
+
+        const fetchedProjects = projectsRes.data.projects.map(project => ({
+          ...project,
+          tasks: project.tasks || []
+        }));
+
+        setProjects(fetchedProjects);
         setCategories(categoriesRes.data.categories);
         setLoading(false);
-      } catch {
+      } catch (error) {
         setLoading(false);
       }
     };
@@ -31,8 +37,8 @@ const ProjectList = () => {
   const filteredProjects = projects.filter(project => {
     const matchesTitle = project.title.toLowerCase().includes(filter.toLowerCase());
     const matchesCategory = categoryFilter
-      ? project.tasks.some(task =>
-          task.categories.some(category => category.id === parseInt(categoryFilter))
+      ? project.tasks?.some(task =>
+          task.categories?.some(category => category.id === parseInt(categoryFilter))
         )
       : true;
     return matchesTitle && matchesCategory;

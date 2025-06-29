@@ -49,7 +49,6 @@ const ProjectDetails = () => {
       );
       setTaskForm({ title: '', description: '', due_date: '', assigned_to: '' });
       setErrors({});
-      // Refresh project data
       const response = await axios.get(`http://localhost:5000/api/projects/${id}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       });
@@ -67,7 +66,7 @@ const ProjectDetails = () => {
         <>
           <h1 className="hero-title">{project.title}</h1>
           <p>{project.description}</p>
-          <p>Created by: {project.creator.username}</p>
+          <p>Created by: {project.creator?.username || 'Unknown'}</p>
           <p>Created at: {new Date(project.created_at).toLocaleDateString()}</p>
           <Button
             variant="primary"
@@ -77,7 +76,7 @@ const ProjectDetails = () => {
             Edit Project
           </Button>
           <h2 style={{ fontSize: '24px', marginTop: '24px' }}>Tasks</h2>
-          {project.tasks.length > 0 ? (
+          {project.tasks?.length > 0 ? (
             <ul>
               {project.tasks.map(task => (
                 <li key={task.id} style={{ marginBottom: '16px' }}>
@@ -86,7 +85,7 @@ const ProjectDetails = () => {
                   <p>Status: {task.status}</p>
                   <p>Due: {task.due_date ? new Date(task.due_date).toLocaleDateString() : 'N/A'}</p>
                   <p>Assigned to: {task.assigned_to?.username || 'Unassigned'}</p>
-                  <p>Categories: {task.categories.map(c => c.name).join(', ') || 'None'}</p>
+                  <p>Categories: {(task.categories || []).map(c => c.name).join(', ') || 'None'}</p>
                 </li>
               ))}
             </ul>

@@ -4,46 +4,77 @@
   --gray-600: #718096;
   --gray-900: #1a202c;
   --blue-600: #3182ce;
+  --blue-700: #2b6cb0;
   --red-500: #e53e3e;
   --green-500: #38a169;
+  --shadow: rgba(0, 0, 0, 0.1) 0px 2px 4px;
+  --radius: 8px;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--gray-100);
+  color: var(--gray-900);
+  margin: 0;
+  padding: 0;
 }
 
 .container {
-  padding: 16px;
+  padding: 32px 16px;
   min-height: 100vh;
-  background-color: var(--gray-100);
   max-width: 1200px;
   margin: 0 auto;
+  background-color: white;
+  box-shadow: var(--shadow);
+  border-radius: var(--radius);
 }
 
 .hero-title {
-  font-size: 32px;
-  font-weight: bold;
+  font-size: 36px;
+  font-weight: 700;
   color: var(--gray-900);
   text-align: center;
-  margin-bottom: 32px;
+  margin-bottom: 40px;
 }
 
 .featured-projects {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-  gap: 16px;
-  max-width: 1200px;
-  margin: 0 auto;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 24px;
+  margin-top: 20px;
+}
+
+button {
+  background-color: var(--blue-600);
+  color: white;
+  padding: 10px 20px;
+  font-size: 15px;
+  font-weight: 600;
+  border: none;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 button:hover {
-  opacity: 0.9;
+  background-color: var(--blue-700);
+  transform: scale(1.02);
 }
 
 input, select {
-  border-radius: 4px;
+  border-radius: var(--radius);
   border: 1px solid var(--gray-300);
-  padding: 8px;
-  font-size: 14px;
+  padding: 10px;
+  font-size: 15px;
+  width: 100%;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow);
+  transition: border-color 0.3s, box-shadow 0.3s;
 }
 
 input:focus, select:focus {
   outline: none;
   border-color: var(--blue-600);
+  box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.3);
 }

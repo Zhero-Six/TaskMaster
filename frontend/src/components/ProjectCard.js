@@ -4,7 +4,7 @@ import { AuthContext } from '../context/AuthContext';
 import Button from './Button';
 import axios from 'axios';
 
-const ProjectCard = ({ id, title, description, creator, status }) => {
+const ProjectCard = ({ id, title, description, creator = {}, status }) => {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -25,12 +25,12 @@ const ProjectCard = ({ id, title, description, creator, status }) => {
     <div style={{ backgroundColor: 'white', padding: '16px', borderRadius: '8px', boxShadow: '0 1px 2px rgba(0, 0, 0, 0.1)' }}>
       <h3 style={{ fontSize: '18px', fontWeight: '600', color: 'var(--gray-900)' }}>{title}</h3>
       <p style={{ color: 'var(--gray-600)' }}>{description}</p>
-      <p style={{ color: 'var(--gray-600)' }}>Creator: {creator.username || creator}</p>
-      <p style={{ color: 'var(--gray-600)' }}>Status: {status}</p>
+      <p style={{ color: 'var(--gray-600)' }}>Creator: {creator?.username || creator || 'Unknown'}</p>
+      <p style={{ color: 'var(--gray-600)' }}>Status: {status || 'N/A'}</p>
       <Link to={`/projects/${id}`}>
         <Button variant="primary">View Details</Button>
       </Link>
-      {user && user.id === creator.id && (
+      {user && user.id === creator?.id && (
         <>
           <Link to={`/edit-project/${id}`}>
             <Button variant="secondary" style={{ marginLeft: '8px' }}>
