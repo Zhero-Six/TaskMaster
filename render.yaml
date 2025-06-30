@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: taskmaster-backend
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    plan: free
+    envVars:
+      - key: SECRET_KEY
+        value: e21964dbe8fbd0c3728b92bb2cb74290
+      - key: DATABASE_URL
+        value: sqlite:///taskmaster.db
+      - key: MAIL_SERVER
+        value: smtp.gmail.com
+      - key: MAIL_USERNAME
+        value: vmochoge@gmail.com
+      - key: MAIL_PASSWORD
+        value: nysbtvgxurkfnbpy
+      - key: MAIL_PORT
+        value: 587
+      - key: MAIL_USE_TLS
+        value: true
+      - key: MAIL_DEFAULT_SENDER
+        value: vmochoge@gmail.com

@@ -12,8 +12,8 @@ import os
 
 load_dotenv()
 
-app = Flask(__name__)  # Confirmed correct
-CORS(app, resources={r"/api/*": {"origins": "*"}})  # Updated for specific API routes
+app = Flask(__name__)
+CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
@@ -26,21 +26,14 @@ app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
 app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
 app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_DEFAULT_SENDER')
 
-# Debug: Print configuration
-print(f"SECRET_KEY: {app.config['SECRET_KEY']}")
-print(f"DATABASE_URL: {app.config['SQLALCHEMY_DATABASE_URI']}")
-print(f"JWT_SECRET_KEY: {app.config['JWT_SECRET_KEY']}")
-
 db.init_app(app)
 migrate = Migrate(app, db)
 jwt = JWTManager(app)
 mail = Mail(app)
 
-# Register Blueprints
 app.register_blueprint(auth_bp)
 app.register_blueprint(api_bp)
 
-# Root route
 @app.route('/')
 def index():
     return {'message': 'Welcome to TaskMaster API root route'}
