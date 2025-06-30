@@ -7,25 +7,25 @@ import axios from 'axios';
 
 const featuredDefaults = [
   {
-    id: 201,
-    title: "AI-Powered Chatbot",
-    description: "A conversational assistant built with NLP and Flask APIs.",
-    status: "active",
-    creator: { username: "tech_lead" }
+    id: 'f1',
+    title: 'AI Chatbot Assistant',
+    description: 'A virtual assistant using NLP and machine learning to automate customer support.',
+    creator: { username: 'DemoBot' },
+    status: 'featured'
   },
   {
-    id: 202,
-    title: "DevOps CI/CD Pipeline",
-    description: "Automated deployment setup using GitHub Actions and Docker.",
-    status: "active",
-    creator: { username: "devops_master" }
+    id: 'f2',
+    title: 'Smart Home IoT Dashboard',
+    description: 'A real-time control and monitoring system for connected home devices.',
+    creator: { username: 'SmartOps' },
+    status: 'featured'
   },
   {
-    id: 203,
-    title: "React Admin Dashboard",
-    description: "A responsive admin interface with charts, filters, and auth.",
-    status: "in-progress",
-    creator: { username: "ui_designer" }
+    id: 'f3',
+    title: 'Blockchain Voting System',
+    description: 'A decentralized, transparent election platform built on Ethereum.',
+    creator: { username: 'VoteChain' },
+    status: 'featured'
   }
 ];
 

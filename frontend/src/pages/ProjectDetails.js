@@ -21,8 +21,13 @@ const ProjectDetails = () => {
         setProject(response.data);
         setLoading(false);
       })
-      .catch(() => {
+      .catch(error => {
+        console.error('Error loading project:', error);
         setLoading(false);
+        alert(
+          error.response?.data?.error ||
+          'Could not load project. You may not have permission or the project may not exist.'
+        );
         navigate('/projects');
       });
   }, [id, navigate]);

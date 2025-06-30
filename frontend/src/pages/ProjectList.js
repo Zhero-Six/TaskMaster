@@ -12,22 +12,24 @@ const ProjectList = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const token = localStorage.getItem('token');
+        const headers = { Authorization: `Bearer ${token}` };
+
         const [projectsRes, categoriesRes] = await Promise.all([
-          axios.get('http://localhost:5000/api/projects'),
-          axios.get('http://localhost:5000/api/categories', {
-            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-          }),
+          axios.get('http://localhost:5000/api/projects', { headers }),
+          axios.get('http://localhost:5000/api/categories', { headers }),
         ]);
 
         const fetchedProjects = projectsRes.data.projects.map(project => ({
           ...project,
-          tasks: project.tasks || []
+          tasks: project.tasks || [],
         }));
 
         setProjects(fetchedProjects);
         setCategories(categoriesRes.data.categories);
         setLoading(false);
       } catch (error) {
+        console.error(error);
         setLoading(false);
       }
     };

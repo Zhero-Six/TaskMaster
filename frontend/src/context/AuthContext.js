@@ -1,3 +1,5 @@
+// AuthContext.js
+
 import React, { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
 
@@ -14,11 +16,18 @@ export const AuthProvider = ({ children }) => {
           headers: { Authorization: `Bearer ${token}` },
         })
         .then(response => {
-          setUser(response.data.user);
+          const userData = response.data.user;
+          // Ensure user.id is a number, and include is_admin if available
+          setUser({
+            ...userData,
+            id: Number(userData.id),
+            is_admin: response.data.is_admin ?? false,
+          });
         })
         .catch(() => {
           localStorage.removeItem('token');
           setToken(null);
+          setUser(null);
         });
     }
   }, [token]);
@@ -29,7 +38,11 @@ export const AuthProvider = ({ children }) => {
       const { access_token, user } = response.data;
       localStorage.setItem('token', access_token);
       setToken(access_token);
-      setUser(user);
+      setUser({
+        ...user,
+        id: Number(user.id),
+        is_admin: user.is_admin ?? false, // if backend provides this
+      });
       return true;
     } catch (error) {
       console.error('Login failed:', error);

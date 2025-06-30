@@ -22,8 +22,12 @@ const EditProject = () => {
         setFormData({ title: response.data.title, description: response.data.description });
         setLoading(false);
       })
-      .catch(() => {
-        setLoading(false);
+      .catch(error => {
+        console.error('Failed to fetch project for editing:', error);
+        alert(
+          error.response?.data?.error ||
+          'Could not load project for editing. You may not have permission or the project may not exist.'
+        );
         navigate('/projects');
       });
   }, [id, token, navigate]);

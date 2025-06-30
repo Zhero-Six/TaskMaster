@@ -6,15 +6,15 @@ from datetime import datetime
 api_bp = Blueprint('api', __name__)
 
 @api_bp.route('/api/projects', methods=['GET'])
-@jwt_required()  # Added
+@jwt_required()
 def get_projects():
-    user_id = get_jwt_identity()
+    user_id = int(get_jwt_identity())
     claims = get_jwt()
     page = request.args.get('page', 1, type=int)
     per_page = request.args.get('per_page', 10, type=int)
-    if claims.get('is_admin', False):  # Admin sees all projects
+    if claims.get('is_admin', False):
         projects = Project.query.paginate(page=page, per_page=per_page)
-    else:  # Regular user sees only their projects
+    else:
         projects = Project.query.filter_by(creator_id=user_id).paginate(page=page, per_page=per_page)
     return jsonify({
         'projects': [
@@ -37,10 +37,10 @@ def get_projects():
     }), 200
 
 @api_bp.route('/api/projects/<int:id>', methods=['GET'])
-@jwt_required()  # Added for consistency
+@jwt_required()
 def get_project(id):
     project = Project.query.get_or_404(id)
-    user_id = get_jwt_identity()
+    user_id = int(get_jwt_identity())
     claims = get_jwt()
     if project.creator_id != user_id and not claims.get('is_admin', False):
         return jsonify({'error': 'You can only view projects you created or if you are an admin'}), 403
@@ -66,7 +66,7 @@ def get_project(id):
 @api_bp.route('/api/projects', methods=['POST'])
 @jwt_required()
 def create_project():
-    user_id = get_jwt_identity()
+    user_id = int(get_jwt_identity())
     data = request.get_json()
     title = data.get('title')
     description = data.get('description')
@@ -92,7 +92,7 @@ def create_project():
 @api_bp.route('/api/projects/<int:id>', methods=['PUT'])
 @jwt_required()
 def update_project(id):
-    user_id = get_jwt_identity()
+    user_id = int(get_jwt_identity())
     project = Project.query.get_or_404(id)
     if project.creator_id != user_id:
         return jsonify({'error': 'You can only update projects you created'}), 403
@@ -116,7 +116,7 @@ def update_project(id):
 @api_bp.route('/api/projects/<int:id>', methods=['DELETE'])
 @jwt_required()
 def delete_project(id):
-    user_id = get_jwt_identity()
+    user_id = int(get_jwt_identity())
     project = Project.query.get_or_404(id)
     if project.creator_id != user_id:
         return jsonify({'error': 'You can only delete projects you created'}), 403
@@ -177,7 +177,7 @@ def update_task(id):
 @api_bp.route('/api/projects/<int:project_id>/tasks', methods=['POST'])
 @jwt_required()
 def create_task(project_id):
-    user_id = get_jwt_identity()
+    user_id = int(get_jwt_identity())
     project = Project.query.get_or_404(project_id)
     data = request.get_json()
     title = data.get('title')
@@ -222,7 +222,7 @@ def create_task(project_id):
 @api_bp.route('/api/profile', methods=['GET'])
 @jwt_required()
 def get_profile():
-    user_id = get_jwt_identity()
+    user_id = int(get_jwt_identity())
     user = User.query.get_or_404(user_id)
     return jsonify({
         'user': {
@@ -255,7 +255,7 @@ def get_categories():
 @api_bp.route('/api/categories', methods=['POST'])
 @jwt_required()
 def create_category():
-    user_id = get_jwt_identity()
+    user_id = int(get_jwt_identity())
     data = request.get_json()
     name = data.get('name')
     description = data.get('description')
