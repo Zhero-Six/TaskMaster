@@ -1,4 +1,4 @@
-// AuthContext.js
+// context/AuthContext.js
 
 import React, { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
@@ -12,12 +12,11 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     if (token) {
       axios
-        .get('http://localhost:5000/api/profile', {
+        .get('https://taskmaster-6964.onrender.com/api/profile', {
           headers: { Authorization: `Bearer ${token}` },
         })
         .then(response => {
           const userData = response.data.user;
-          // Ensure user.id is a number, and include is_admin if available
           setUser({
             ...userData,
             id: Number(userData.id),
@@ -34,14 +33,14 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      const response = await axios.post('http://localhost:5000/api/login', { email, password });
+      const response = await axios.post('https://taskmaster-6964.onrender.com/api/login', { email, password });
       const { access_token, user } = response.data;
       localStorage.setItem('token', access_token);
       setToken(access_token);
       setUser({
         ...user,
         id: Number(user.id),
-        is_admin: user.is_admin ?? false, // if backend provides this
+        is_admin: user.is_admin ?? false,
       });
       return true;
     } catch (error) {
